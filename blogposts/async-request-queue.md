@@ -1,0 +1,75 @@
+---
+title: 'Improving API request performance in your JavaScript application using an async request queue'
+date: '2023-03-25'
+---
+
+When you make multiple API requests in your Javascript application, it can block the main thread and slow down the user experience. This happens because JavaScript is a single-threaded language, and if you make synchronous requests, the code will execute one request at a time, blocking the main thread until it's done which results in slow application performance and an unresponsive user interface.
+
+To solve this problem, we can use an async request queue. The async request queue is a way to handle multiple requests asynchronously, without blocking the main thread. It works by adding all the requests to a queue, and then processing them one by one in the background which means that the main thread is not blocked, and the application remains responsive and fast.
+
+In the code you'll find in the repo, I have created an async request queue using a class called RequestQueue. The RequestQueue class has a queue property that stores an array of request callbacks. The class also has an isProcessing boolean property that keeps track of whether the queue is currently processing any requests.
+
+```typescript
+class RequestQueue {
+    private queue: RequestCallBack[] = [];
+    private isProcessing = false;
+
+    public addRequest(request: RequestCallBack): void {
+        this.queue.push(request);
+
+        if (!this.isProcessing) {
+            this.processQueue();
+        }
+    }
+
+    private async processQueue(): Promise<void> {
+        this.isProcessing = true;
+        while (this.queue.length) {
+            try {
+                const request = this.queue.shift();
+
+                if (request) {
+                    await request();
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        }
+
+        this.isProcessing = false;
+    }
+}
+```
+
+The RequestQueue class has two methods: addRequest() and processQueue(). The addRequest() method adds a new request callback to the queue and starts processing the queue if it's not already processing. The processQueue() method processes the queue by looping through each request callback in the queue and executing it.
+
+The code adds two requests to the queue and each request is an async function that logs a message, waits for a certain amount of time using setTimeout, and then logs another message.
+
+```typescript
+const requestQueue = new RequestQueue();
+
+requestQueue.addRequest(async () => {
+    console.log("Request 1 started");
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    console.log("Request 1 completed");
+});
+
+requestQueue.addRequest(async () => {
+    console.log("Request 2 started");
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+    console.log("Request 2 completed");
+});
+
+console.log("Added requests to queue");
+console.log("Main thread is not blocked!");
+
+setTimeout(() => {
+    console.log("so useful!");
+}, 1000)
+```
+
+After adding the requests to the queue, the program logs two messages to the console: "Added requests to queue" and "Main thread is not blocked!". This is because the requests have been added to the queue and will be processed asynchronously, which means that the main thread of the program will not be blocked while the requests are being executed.
+
+![Async-Request-Queue](/images/async-request-queue.jpeg)
+
+Check out the repo [here](https://github.com/kx0101/AsyncRequestQueue/blob/main/index.ts).

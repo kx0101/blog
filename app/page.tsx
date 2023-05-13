@@ -1,4 +1,5 @@
 import Posts from "./components/Posts"
+import 'prismjs/themes/prism-tomorrow.css';
 
 export default function Home() {
     return (

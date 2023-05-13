@@ -1,0 +1,25 @@
+---
+title: 'Automating Tedious Tasks - How I Created a Python Script to Streamline Daily Operations for My Team'
+date: '2022-12-19'
+---
+
+![Helping/images/python-script.jpeg)
+
+I took the initiative to spend a day creating a python script whose purpose is to automate a number of tedious daily operations that one member of my team(including me) has to do. This procedure takes around 15 mins each time, assuming you know what you are doing. It can get quite tiring and sometimes even annoying because, if for example you're assigned to do these operations for today but you're in the "flow" working on a tough task, you really don't want to get out of the zone.
+
+Key features and benefits:
+
+- The script performs a series of operations on a set of input data, such as data processing, file handling, and other tasks that we typically have to do manually.
+
+- It is easy to use and customizable, so we can adapt it to our specific needs and requirements.
+
+- It includes error-checking and logging to ensure reliability and traceability.
+
+- It saves us a significant amount of time and effort, allowing us to focus on more challenging and rewarding tasks.
+
+- It reduces the risk of errors and inconsistencies, ensuring that the results are accurate and complete.
+
+- When a new member joins the team, we can simply provide them with the script and a brief explanation of how to use it. This saves us a lot of time and effort, and allows the new member to start working on their own tasks right away.
+
+
+Helping your team is important!

@@ -4,6 +4,7 @@ import html from 'remark-html';
 import path from 'path';
 import matter from 'gray-matter';
 import { BlogPost } from '@/types';
+import remarkHtml from 'remark-html';
 
 const postsDirectory = path.join(process.cwd(), 'blogposts');
 
@@ -45,6 +46,7 @@ export async function getPostData(id: string) {
 
     const processedContent = await remark()
         .use(html)
+        .use(remarkHtml)
         .process(matterResult.content);
 
     const contentHtml = processedContent.toString();
