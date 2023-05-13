@@ -1,10 +1,11 @@
 import fs from 'fs';
-import { remark } from 'remark';
-import html from 'remark-html';
 import path from 'path';
 import matter from 'gray-matter';
-import { BlogPost } from '@/types';
-import remarkHtml from 'remark-html';
+import { BlogPost, Meta } from '@/types';
+import { compileMDX } from 'next-mdx-remote/rsc'
+import rehypeAutolinkHeadings from 'rehype-autolink-headings';
+import rehypeHighlight from 'rehype-highlight/lib';
+import rehypeSlug from 'rehype-slug';
 
 const postsDirectory = path.join(process.cwd(), 'blogposts');
 
@@ -18,18 +19,20 @@ export function generateStaticParams() {
 
 export function getSortedPostsData() {
     const fileNames = fs.readdirSync(postsDirectory);
+
     const allPostsData = fileNames.map((fileName) => {
-        const id = fileName.replace(/\.md$/, '');
+        const id = fileName.replace(/\.mdx$/, '');
 
         const fullPath = path.join(postsDirectory, fileName);
         const fileContents = fs.readFileSync(fullPath, 'utf-8');
 
         const matterResult = matter(fileContents);
 
-        const blogPost: BlogPost = {
+        const blogPost: Meta = {
             id,
             title: matterResult.data.title,
             date: matterResult.data.date,
+            tags: matterResult.data.tags,
         }
 
         return blogPost;
@@ -39,23 +42,33 @@ export function getSortedPostsData() {
 }
 
 export async function getPostData(id: string) {
-    const fullPath = path.join(postsDirectory, `${id}.md`);
+    const fullPath = path.join(postsDirectory, `${id}.mdx`);
     const fileContents = fs.readFileSync(fullPath, 'utf-8');
 
-    const matterResult = matter(fileContents);
+    const { frontmatter, content } = await compileMDX<{ title: string, date: string, tags: string[] }>({
+        source: fileContents,
+        options: {
+            parseFrontmatter: true,
+            mdxOptions: {
+                rehypePlugins: [
+                    rehypeHighlight,
+                    rehypeSlug,
+                    [rehypeAutolinkHeadings, {
+                        behavior: 'wrap'
+                    }]
+                ]
+            }
+        }
+    })
 
-    const processedContent = await remark()
-        .use(html)
-        .use(remarkHtml)
-        .process(matterResult.content);
-
-    const contentHtml = processedContent.toString();
-
-    const blogPostWithHTML: BlogPost & { contentHtml: string } = {
-        id,
-        title: matterResult.data.title,
-        date: matterResult.data.date,
-        contentHtml
+    const blogPostWithHTML: BlogPost = {
+        meta: {
+            id,
+            title: frontmatter.title,
+            date: frontmatter.date,
+            tags: frontmatter.tags,
+        },
+        content
     }
 
     return blogPostWithHTML;

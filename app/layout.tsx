@@ -1,6 +1,5 @@
 import './globals.css'
 import Navbar from './components/Navbar'
-import ProfilePic from './components/ProfilePic'
 
 export const metadata = {
     title: "Elijah's Blog",
@@ -16,8 +15,9 @@ export default function RootLayout({
         <html lang="en">
             <body className='bg-slate-800'>
                 <Navbar />
-                <ProfilePic />
-                {children}
+                <main className='px-4 md:px-6 prose prose-xl prose-invert mx-auto'>
+                    {children}
+                </main>
             </body>
         </html>
     )
