@@ -1,0 +1,70 @@
+---
+title: 'Implementing the Spread Operator in TypeScript - A Look Under the Hood'
+date: '2023-05-01'
+tags: ['test', 'test']
+---
+
+Have you ever wondered how the spread operator '...' in JavaScript works under the hood?
+
+It's a useful tool for spreading the values of an iterable object into a new array, but have you ever thought about how it affects the time and space complexity of your code?
+
+I've written a TypeScript implementation of the spread operator that avoids using the actual '...' triple dot. (Basically an implementation of the spread operator under the hood).
+
+We start off by defining a custom iterator class that implements the IterableIterator interface. The IterableIterator interface requires the implementation of two methods: next() and Symbol.iterator().
+
+```typescript
+class CustomIterator<T> implements IterableIterator<T> {
+    private values: T[];
+    private index: number;
+
+    constructor(values: T[]) {
+        this.values = values;
+        this.index = 0;
+    }
+
+    public next(): IteratorResult<T> {
+        if (this.index >= this.values.length) {
+            return { value: undefined, done: true };
+        } else {
+            const value = this.values[this.index];
+            this.index++;
+
+            return { value, done: false };
+        }
+    }
+
+    public [Symbol.iterator](): IterableIterator<T> {
+        return this
+    }
+}
+```
+
+In the CustomIterator we have a values array and an index variable that keeps track of the current position in the array. The next() method checks whether the current index is less than the length of the array. If it is, it returns an object containing the current value and done set to false, and increments the index. If the current index is equal to or greater than the length of the array, it returns an object containing value set to undefined and done set to true, meaning that we finished the iteration.
+
+One interesting part is the Symbol.iterator() method which returns the CustomIterator instance itself, making the class iterable.
+
+Finally, the concat function that takes an array of iterable objects as its parameter and returns an array of their concatenated values. We start off by looping through each iterable object in the iterables array and create a new CustomIterator instance using the Array.from method to extract its values. We then loop through each value in the iterator and push it to the result array.
+
+```typescript
+function concat<T>(iterables: Iterable<T>[]): T[] {
+    const result: T[] = [];
+
+    for (const iterable of iterables) {
+        const iterator = new CustomIterator(Array.from(iterable));
+
+        for (const value of iterator) {
+            result.push(value);
+        }
+    }
+
+    return result;
+}
+````
+
+Another interesting thing is the usage of Array.from method. We're using this method, because not all iterable objects are arrays, and may not have a length property, push etc. By creating a new array from the iterable object, we ensure that we have an array that we can loop through and push values to as we iterate over it.
+
+For example, if we passed a Set object to the concat method, the Set object is iterable but doesn't have a push method, and we cannot assume that it has a length property. However, by using Array.from to create a new array from the Set object, we ensure that we have an array that we can loop through and push values to, as I mentioned previously.
+
+Check out the repo [here](https://github.com/kx0101/spread-operator-low-level/blob/main/spread-operator.ts).
+
+![SpreadOperator](/images/SpreadOperator.jpeg)

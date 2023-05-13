@@ -1,0 +1,21 @@
+---
+title: 'Introducing a Rust Program for a Web-Based Markdown Editor with Live Preview'
+date: '2023-04-02'
+tags: ['test', 'test']
+---
+
+I just finished creating a new program in Rust that I'm excited to share with you all. It took a good amount of hours debugging and trying out different approaches.
+
+The goal of this program is to create a simple web-based Markdown editor that allows you to edit a Markdown file on your local machine using an IDE or text editor, and see a live preview of the rendered HTML in your web browser.
+
+![Rust-Markdown](/images/Rust-Markdown.jpeg)
+
+So how does it work? Well, the program is built using the Actix-Web framework, and it utilizes some other Rust libraries for parsing and rendering Markdown (pulldown_cmark). Whenever you save changes to the Markdown file in your IDE or text editor, the program automatically updates the preview in your web browser using a polling mechanism to check for updates and the pulldown_cmark library to render the Markdown into HTML.
+
+![polling](/images/polling.png)
+
+Under the hood, the program uses Rust's concurrency primitives to manage shared state between the different parts of the program. It uses a Mutex and an Arc to ensure that the Markdown is always in a consistent state and can be accessed by multiple threads at once.
+
+Overall, I'm really happy with how this program turned out. It was a fun challenge to build, and I learned a lot about Rust and web development along the way. If you're interested in checking it out for yourself, you can check out my repo!
+
+Check out the repo [here](https://github.com/kx0101/markdown_editor/blob/main/src/main.rs).

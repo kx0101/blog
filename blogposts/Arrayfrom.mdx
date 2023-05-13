@@ -1,0 +1,50 @@
+---
+title: 'Improving Array Comparison Performance with Set and Array.from()'
+date: '2023-05-03'
+tags: ['test', 'test']
+---
+
+Just recently, I came across an interesting problem on LeetCode that required me to find the difference between two arrays. While I was able to solve the problem initially, I was curious about the most efficient way to do it.
+
+```typescript
+function findDifference1(nums1: number[], nums2: number[]): number[][] {
+    const subsetOfOne = [];
+    const subsetOfTwo = [];
+
+    for (const num of nums1) {
+        if (!nums2.includes(num)) {
+            subsetOfOne.push(num);
+        }
+    }
+
+    for (const num of nums2) {
+        if (!nums1.includes(num)) {
+            subsetOfTwo.push(num);
+        }
+    }
+
+    return [subsetOfOne, subsetOfTwo];
+}
+```
+
+Here's the leetcode question: [Leetcode](https://leetcode.com/problems/find-the-difference-of-two-arrays/)
+
+After some research and experimentation, I discovered that using Set and Array.from() to create a set of each array and then filtering the elements that are not present in the other set is a much faster approach than using includes() and push() to iterate through both arrays.
+
+```typescript
+function findDifference2(nums1: number[], nums2: number[]): number[][] {
+    const setOne = new Set(nums1);
+    const setTwo = new Set(nums2);
+
+    const subsetOfOne = Array.from(setOne).filter(num => !setTwo.has(num));
+    const subsetOfTwo = Array.from(setTwo).filter(num => !setOne.has(num));
+
+    return [subsetOfOne, subsetOfTwo];
+}
+```
+
+For arrays of small to medium size (up to 1000 elements), both solutions had similar performance. However, as the size of the array increased, the second solution using Set and Array.from() became significantly faster. For example, on an array of size 50000, the second solution was about 143 times faster than the first solution!
+
+![Arrayfrom](/images/Arrayfrom.jpeg)
+
+So why is the second solution faster? The Set data structure has a time complexity of O(1) for checking whether an element is present, which means that it is much faster than includes() for larger arrays. Additionally, the Array.from() method allows us to create a new array from the filtered elements without having to call push() repeatedly, which avoids the overhead of creating and growing an array dynamically and can be faster, especially for large arrays.
