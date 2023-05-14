@@ -1,7 +1,7 @@
 ---
 title: 'Implementing the Spread Operator in TypeScript - A Look Under the Hood'
 date: '2023-05-01'
-tags: ['test', 'test']
+tags: ['typescript', 'spread-operator', 'iterable', 'concatenation', 'performance']
 ---
 
 Have you ever wondered how the spread operator '...' in JavaScript works under the hood?
@@ -65,6 +65,6 @@ Another interesting thing is the usage of Array.from method. We're using this me
 
 For example, if we passed a Set object to the concat method, the Set object is iterable but doesn't have a push method, and we cannot assume that it has a length property. However, by using Array.from to create a new array from the Set object, we ensure that we have an array that we can loop through and push values to, as I mentioned previously.
 
-Check out the repo [here](https://github.com/kx0101/spread-operator-low-level/blob/main/spread-operator.ts).
+Check out the repo **[here](https://github.com/kx0101/spread-operator-low-level/blob/main/spread-operator.ts)**.
 
 ![SpreadOperator](/images/SpreadOperator.jpeg)

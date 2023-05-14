@@ -37,7 +37,7 @@ export default async function Post({ params }: { params: { postId: string } }) {
 
     const tags = meta.tags.map((tag: any, i: number) => (
         <Link key={i} href={`/tags/${tag}`}>
-            <a className="inline-block bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold px-2 rounded mr-2">
+            <a className="inline-block bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold px-2 py-1 rounded mr-2 mb-2 whitespace-nowrap overflow-hidden overflow-ellipsis">
                 {tag}
             </a>
         </Link>
@@ -56,10 +56,10 @@ export default async function Post({ params }: { params: { postId: string } }) {
 
             <div className="flex flex-wrap mb-8">
                 <span className="mr-2">Tags:</span>
-                <div>{tags}</div>
+                <div className="flex flex-wrap">{tags}</div>
             </div>
 
-            <Link href="/" className="mb-4">
+            <Link href="/">
                 <a className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">
                     Back to Home
                 </a>

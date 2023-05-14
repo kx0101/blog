@@ -1,7 +1,7 @@
 ---
 title: 'Improving Array Comparison Performance with Set and Array.from()'
 date: '2023-05-03'
-tags: ['test', 'test']
+tags: ['array', 'performance', 'leetcode', 'algorithm', 'typescript', 'programming', 'optimization']
 ---
 
 Just recently, I came across an interesting problem on LeetCode that required me to find the difference between two arrays. While I was able to solve the problem initially, I was curious about the most efficient way to do it.
@@ -27,7 +27,7 @@ function findDifference1(nums1: number[], nums2: number[]): number[][] {
 }
 ```
 
-Here's the leetcode question: [Leetcode](https://leetcode.com/problems/find-the-difference-of-two-arrays/)
+Here's the leetcode question: **[Leetcode](https://leetcode.com/problems/find-the-difference-of-two-arrays/)**
 
 After some research and experimentation, I discovered that using Set and Array.from() to create a set of each array and then filtering the elements that are not present in the other set is a much faster approach than using includes() and push() to iterate through both arrays.
 

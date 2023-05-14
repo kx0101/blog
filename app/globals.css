@@ -1,3 +1,8 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+h2[id] a {
+  color: blue;
+  text-decoration: underline;
+}
