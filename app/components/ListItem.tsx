@@ -6,18 +6,32 @@ type Props = {
     post: Meta;
 };
 
-export default function ListItem({ post }: Props) {
-    const { id, title, date } = post;
-    const formattedDate = getFormattedDate(date);
+export default function ListItem({ post }: { post: any }) {
+  const { id, title, date, tags } = post;
+  const formattedDate = new Date(date).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
 
-    return (
-        <li className='mt-4 text-2xl text-white/90'>
-            <Link className='text-white/70 hover:text-white' href={`/posts/${id}`}>
-                {title}
-            </Link>
-            <br />
-            <p className='text-sm mt-1'>{formattedDate}</p>
-            <hr className='my-2 border-gray-400 border-solid' />
-        </li>
-    )
+  return (
+    <li className="py-4">
+      <Link href={`/posts/${id}`}>
+        <a className="text-3xl font-bold text-white/70 hover:text-white">
+          {title}
+        </a>
+      </Link>
+      <p className="mt-2 text-gray-400">{formattedDate}</p>
+      <div className="flex flex-row gap-4 mt-4">
+        {tags.map((tag: string, i: number) => (
+          <Link key={i} href={`/tags/${tag}`}>
+            <a className="px-4 py-2 bg-gray-800 rounded-full text-white/90 hover:bg-gray-700">
+              {tag}
+            </a>
+          </Link>
+        ))}
+      </div>
+      <hr className="my-8 border-gray-600" />
+    </li>
+  );
 }

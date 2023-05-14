@@ -25,7 +25,9 @@ export default async function Post({ params }: { params: { postId: string } }) {
     const posts = getSortedPostsData();
     const { postId } = params;
 
-    if (!posts.find(post => post.id === postId)) {
+    const post = posts.find((p) => p.id === postId);
+
+    if (!post) {
         return notFound();
     }
 
@@ -34,28 +36,34 @@ export default async function Post({ params }: { params: { postId: string } }) {
     const pubDate = getFormattedDate(meta.date);
 
     const tags = meta.tags.map((tag: any, i: number) => (
-        <Link key={i} href={`/tags/${tag}`}>tag</Link>
-    ))
+        <Link key={i} href={`/tags/${tag}`}>
+            <a className="inline-block bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold px-2 rounded mr-2">
+                {tag}
+            </a>
+        </Link>
+    ));
 
     return (
         <>
-            <h2 className="text-3xl mt-4 mb-0">{meta.title}</h2>
-            <p className="mt-0 text-sm">
-                {pubDate}
-            </p>
-            <article>
-                {content}
-            </article>
-
-            <section>
-                <h3>Related:</h3>
-                <div className="flex flex-row gap-4">
-                    {tags}
+            <h1 className="text-4xl font-bold mb-4 mt-4">{meta.title}</h1>
+            <div className="flex items-center mb-6">
+                <div>
+                    <p className="text-gray-600 text-sm">Elijah Koulaxis</p>
+                    <p className="text-gray-400 text-sm">{pubDate}</p>
                 </div>
-            </section>
-            <p className="mb-10">
-                <Link href="/">Back to home</Link>
-            </p>
+            </div>
+            <article className="text-white prose-lg max-w-none mb-8">{content}</article>
+
+            <div className="flex flex-wrap mb-8">
+                <span className="mr-2">Tags:</span>
+                <div>{tags}</div>
+            </div>
+
+            <Link href="/" className="mb-4">
+                <a className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">
+                    Back to Home
+                </a>
+            </Link>
         </>
-    )
-}
+    );
+};
