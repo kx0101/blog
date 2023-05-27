@@ -1,0 +1,98 @@
+---
+title: 'String Concatenation in Java - Performance Comparison'
+date: '2023-05-27'
+tags: ['array', 'performance', 'java', 'programming', 'optimization']
+---
+
+![StringVSStringBuilder2](/images/StringVSStringBuilder2.png)
+
+When it comes to string manipulation in Java, we often face the dilemma of choosing between `String` concatenation (`+=` operator) and `StringBuilder`. But which one should you choose and why?
+
+### <u>**The Problem**</u>
+
+The problem arises when we need to concatenate multiple strings together. Naively using the + operator for concatenation can result in poor performance, especially when dealing with a large number of concatenations. This is due to the immutability of String objects in Java.
+
+### <u>**Solution 1: String Concatenation**</u>
+
+Using `String` concatenation with the `+=` operator is a simple and intuitive approach. For example:
+
+```java
+String result = "Hello";
+result += " World";
+```
+
+However, when concatenating strings using +, each concatenation operation creates a new String object. This means that for each concatenation, memory allocation and copying of the content happens.
+
+### <u>**Solution 2: StringBuilder**</u>
+
+`StringBuilder` is a mutable class specifically designed for efficient string manipulation. Under the hood, the internal character array is modified directly when performing operations like appending or modifying the string. This avoids the need for creating new String objects for each concatenation.
+
+```java
+StringBuilder stringBuilder = new StringBuilder();
+
+stringBuilder.append("Hello");
+stringBuilder.append(" World");
+
+String result = stringBuilder.toString();
+
+System.out.println(result);
+```
+
+*We need to use the toString method to convert the StringBuilder object to a String because StringBuilder is a separate class designed specifically for efficient string manipulation. Using toString will allow us to work with the final concatenated string as a regular String object, which means we will be able to perform further operations or pass it to other parts of our code that expect a String type.*
+
+### <u>**Microbenchmark**</u>
+
+```java
+public class StringConcatenationBenchmark {
+    public static void main(String[] args) {
+        // Warm up the JVM
+        warmUp();
+
+        // String Concatenation Benchmark
+        long startTime = System.currentTimeMillis();
+
+        String concatenatedString = "";
+
+        for (int i = 0; i < 100000; i++) {
+            concatenatedString += "a";
+        }
+
+        long endTime = System.currentTimeMillis();
+        long stringConcatenationTime = endTime - startTime;
+        System.out.println("String Concatenation Time: " + stringConcatenationTime + "ms");
+
+        // StringBuilder Benchmark
+        startTime = System.currentTimeMillis();
+
+        StringBuilder stringBuilder = new StringBuilder();
+
+        for (int i = 0; i < 100000; i++) {
+            stringBuilder.append("a");
+        }
+
+        concatenatedString = stringBuilder.toString();
+        endTime = System.currentTimeMillis();
+        long stringBuilderTime = endTime - startTime;
+        System.out.println("StringBuilder Time: " + stringBuilderTime + "ms");
+    }
+
+    public static void warmUp() {
+        String dummy = "";
+
+        for (int i = 0; i < 10000; i++) {
+            dummy += "a";
+        }
+    }
+}
+```
+
+### **Results:**
+
+![StringVSStringBuilder](/images/StringVSStringBuilder.png)
+
+### <u>**Conclusion**</u>
+
+* StringBuilder generally outperforms String concatenation in terms of performance, especially when dealing with a large number of concatenations.
+* String concatenation creates new String objects for each concatenation, resulting in potential memory allocation and content copying.
+* StringBuilder provides efficient mutable string manipulation, avoiding the creation of multiple String objects.
+* When performing simple concatenations, String concatenation can still be a good choice.
