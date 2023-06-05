@@ -1,0 +1,341 @@
+---
+title: 'Building a Simple Chat Room Application in Java using Websockets'
+date: '2023-06-05'
+tags: ['java', 'programming', 'multithread', 'project']
+---
+
+### <u>**What are WebSockets and how do they work?**</u>
+
+Websockets are a communication protocol that enables real-time, bidirectional communication between a client (typically a web browser) and a server. Unlike traditional HTTP, which follows a request-response model, websockets provide a persistent connection that allows data to be transmitted in both directions without the need for repeated requests.
+
+When a client wants to establish a websocket connection with a server, it sends a special HTTP request called a handshake. If the server supports websockets, it responds with a successful handshake, indicating that the connection is upgraded to the websocket protocol. Once the connection is established, both the client and server can send messages to each other at any time.
+
+### <u>**Overview of the Application**</u>
+The program consists of three main parts: the **Server**, the **Client Handler**, and the **Client**.
+
+### Server
+
+Alright, the server is the big boss here. It's responsible for handling all the incoming client connections and managing the client handlers. The server listens for clients on a specific port using a ServerSocket. Once a client knocks on the server's door, it creates a ClientHandler to take care of that client. The server keeps a list of all the client handlers and starts a separate thread for each of them.
+
+![Java-Chat-Room-Server](/images/Java-Chat-Room-Server.png)
+
+```java
+public class Server {
+    private ServerSocket serverSocket;
+    private List<ClientHandler> clients;
+
+    public Server() {
+        clients = new ArrayList<>();
+    }
+
+    public void start(int port) {
+        try {
+            this.serverSocket = new ServerSocket(port);
+            System.out.println("Server started on port " + port);
+
+            while (true) {
+                Socket clientSocket = serverSocket.accept();
+                System.out.println("New client connection: " + clientSocket);
+
+                ClientHandler clientHandler = new ClientHandler(clientSocket, clients);
+                clients.add(clientHandler);
+
+                Thread clientThread = new Thread(clientHandler);
+                clientThread.start();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void removeClient(ClientHandler clientHandler) {
+        clients.remove(clientHandler);
+        System.out.println("Client removed: " + clientHandler.getClientSocket());
+    }
+
+    public static void main(String[] args) {
+        Server server = new Server();
+        server.start(1234);
+    }
+}
+```
+
+### Client Handler
+
+The ClientHandler is like a loyal assistant to the server. It takes care of all the communication with a specific client. Each connected client gets its own ClientHandler. This little helper listens to what the client has to say and broadcasts the messages to all the other clients in the chat room. It's also responsible for handling commands, like setting a nickname or letting everyone know that a user has the left chat!.
+
+The ClientHandler is a hard worker. It runs in its own thread, allowing multiple clients to chat simultaneously. It reads messages from the client and handles them accordingly. If the message is a disconnect command, the ClientHandler says goodbye to the client. If it's a nickname command, it sets the client's nickname and announces their arrival to the chat room. And if it's just a regular chat message, the ClientHandler shares it with everyone else
+
+```java
+public class ClientHandler implements Runnable {
+    private Socket clientSocket;
+    private PrintWriter output;
+    private List<ClientHandler> clients;
+    private String nickname;
+
+    public Socket getClientSocket() {
+        return clientSocket;
+    }
+
+    public ClientHandler(Socket socket, List<ClientHandler> clients) {
+        this.clientSocket = socket;
+        this.clients = clients;
+    }
+
+    private void broadcastMessage(String message, MessageType messageType) {
+
+        clients.stream()
+                .filter(client -> client != this && !message.startsWith("/"))
+                .forEach(client -> client.output.println(MessagesUtils.getMessageContent(message, messageType, nickname)));
+    }
+
+    public void run() {
+        try (PrintWriter output = new PrintWriter(clientSocket.getOutputStream(), true);
+                BufferedReader input = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()))) {
+
+            this.output = output;
+
+            String message;
+
+            while ((message = input.readLine()) != null) {
+                if (isDisconnectCommand(message)) {
+                    break;
+                }
+
+                if (isNicknameCommand(message)) {
+                    handleNicknameCommand(message);
+                    continue;
+                }
+
+                handleChatMessage(message);
+            }
+
+            handleDisconnect();
+        } catch (IOException e) {
+            handleUnexpectedDisconnect();
+        }
+    }
+
+    private void handleNicknameCommand(String message) {
+        String newNickname = message.substring(10);
+
+        if (newNickname.isEmpty()) {
+            output.println("Nickname cannot be empty.");
+        } else if (checkNicknameAvailability(newNickname)) {
+            setNickname(newNickname);
+            output.println("/nickname " + newNickname);
+
+            broadcastMessage("has joined the chat", MessageType.JOIN);
+        } else {
+            output.println("Nickname already taken. Please choose a different nickname.");
+        }
+    }
+
+    private void handleChatMessage(String message) {
+        System.out.println("Received message from client " + nickname + ": " + message);
+
+        broadcastMessage(message, MessageType.NORMAL);
+    }
+
+    private void handleDisconnect() {
+        System.out.println("Client disconnected: " + clientSocket);
+        broadcastMessage("has left the chat.", MessageType.LEAVE);
+
+        clients.remove(this);
+        closeClientSocket();
+    }
+
+    private void handleUnexpectedDisconnect() {
+        System.out.println("Client disconnected unexpectedly: " + clientSocket);
+        clients.remove(this);
+    }
+
+    private void closeClientSocket() {
+        try {
+            clientSocket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void setNickname(String newNickname) {
+        nickname = newNickname;
+
+        System.out.println("Client " + clientSocket + " set nickname to: " + nickname);
+    }
+
+    private boolean checkNicknameAvailability(String newNickname) {
+        return clients.stream()
+                .noneMatch(client -> client != this && client.nickname != null && client.nickname.equals(newNickname));
+    }
+
+    private boolean isDisconnectCommand(String message) {
+        return message.equalsIgnoreCase(CommandConstants.DISCONNECT_COMMAND);
+    }
+
+    private boolean isNicknameCommand(String message) {
+        return message.startsWith(CommandConstants.NICKNAME_COMMAND_PREFIX);
+    }
+
+    @Override
+    public String toString() {
+        return nickname;
+    }
+}
+```
+
+### Client
+
+Well, the client is the star of the show. It's the one who actually wants to chat! The client connects to the server using a Socket. It also has its own threads for receiving and sending messages.
+
+```java
+public class Client {
+    private Socket socket;
+    private BufferedReader input;
+    private PrintWriter output;
+    private String nickname;
+
+    private Thread receiveThread;
+
+    private boolean isConnected;
+
+    public Client(String serverAddress, int serverPort) {
+        try {
+            socket = new Socket(serverAddress, serverPort);
+            isConnected = true;
+            System.out.println("Connected to server: " + socket);
+
+            input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            output = new PrintWriter(socket.getOutputStream(), true);
+
+        } catch (ConnectException e) {
+            System.out.println("Connection to the server cannot be made. Make sure the server is started!");
+            System.exit(1);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public void start() {
+        receiveThread = new Thread(this::receiveMessages);
+        receiveThread.start();
+
+        try (BufferedReader input = new BufferedReader(new InputStreamReader(System.in))) {
+            String message;
+
+            while ((message = input.readLine()) != null && isConnected) {
+                if (message.equalsIgnoreCase(CommandConstants.DISCONNECT_COMMAND)) {
+                    disconnect();
+                    break;
+                }
+
+                if (message.startsWith(CommandConstants.NICKNAME_COMMAND_PREFIX)) {
+                    handleNicknameCommand(message);
+                    continue;
+                }
+
+                handleChatMessage(message);
+            }
+
+            socket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void receiveMessages() {
+        try {
+            String message;
+
+            while ((message = input.readLine()) != null) {
+
+                if (message.startsWith(CommandConstants.NICKNAME_COMMAND_PREFIX)) {
+                    setNicknameFromServer(message.substring(CommandConstants.NICKNAME_COMMAND_PREFIX.length()));
+                    continue;
+                }
+
+                System.out.println(message);
+            }
+        } catch (IOException e) {
+            System.out.println("Server has stopped. Disconnected from the server.");
+            isConnected = false;
+
+            e.printStackTrace();
+            System.exit(0);
+        }
+    }
+
+    private void handleNicknameCommand(String message) {
+        String newNickname = message.substring(CommandConstants.NICKNAME_COMMAND_PREFIX.length());
+
+        if (newNickname.isEmpty()) {
+            System.out.println(ErrorConstants.EMPTY_NICKNAME_ERROR);
+            return;
+        }
+
+        setNickname(newNickname);
+    }
+
+    private void handleChatMessage(String message) {
+        if (nickname == null) {
+            System.out.println(ErrorConstants.SET_NICKNAME_FIRST_ERROR);
+            return;
+        }
+
+        sendMessage(message);
+    }
+
+    private void sendMessage(String message) {
+        output.println(message);
+    }
+
+    private void setNickname(String newNickname) {
+        output.println(CommandConstants.NICKNAME_COMMAND_PREFIX + newNickname);
+    }
+
+    private void setNicknameFromServer(String newNickname) {
+        nickname = newNickname;
+        System.out.println("Nickname set to: " + nickname);
+        System.out.println("You have entered the chat, you can begin typing :)");
+    }
+
+    private void disconnect() {
+        System.out.println("Disconnecting from the server...");
+        sendMessage(CommandConstants.DISCONNECT_COMMAND);
+        this.isConnected = false;
+
+        try {
+            receiveThread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            socket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void main(String[] args) {
+        Client client = new Client("localhost", 1234);
+        client.start();
+    }
+}
+```
+
+### Client 1
+![Java-Chat-Room-Client1](/images/Java-Chat-Room-Client1.png)
+
+### Client 2
+![Java-Chat-Room-Client2](/images/Java-Chat-Room-Client2.png)
+
+The receive thread is like the client's personal assistant, constantly checking if there are any new messages from the server. It keeps an eye out for nickname commands and sets the client's nickname accordingly. And when there's a regular chat message, it prints it out for the client to see.
+
+The send thread is responsible for sending messages from the client to the server.
+
+### <u>**Conclusion**</u>
+
+So there you have it, our little chat room application built using websockets in Java. It's pretty cool, right? But let me tell you, websockets are not just for chat rooms. They have a wide range of applications. Anytime you need real-time, two-way communication between a client and a server, websockets is the way to go. Whether it's building live dashboards, multiplayer games, or collaborative editing tools, websockets ensure instant updates and a smooth user experience.
+
+Check out the repo **[here](https://github.com/kx0101/chat-room)**.
