@@ -8,13 +8,13 @@ export default function Navbar() {
             <nav className='p-4 mt-8 top-0 drop-shadow-xl z-10'>
                 <div className="mx-auto flex flex-col sm:flex-row items-center justify-center">
                     <div className="flex flex-row text-xl text-white m-2 sm:m-0">
-                        <Link passHref href="/about" className="mx-2 hover:underline">
+                        <Link href="/about" className="mx-2 hover:underline">
                             About
                         </Link>
-                        <Link passHref href="/projects" className="mx-2 hover:underline">
+                        <Link href="/projects" className="mx-2 hover:underline">
                             Projects
                         </Link>
-                        <Link passHref href="/contact" className="mx-2 hover:underline">
+                        <Link href="/contact" className="mx-2 hover:underline">
                             Contact
                         </Link>
                     </div>
