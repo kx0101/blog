@@ -36,10 +36,8 @@ export default async function Post({ params }: { params: { postId: string } }) {
     const pubDate = getFormattedDate(meta.date);
 
     const tags = meta.tags.map((tag: any, i: number) => (
-        <Link key={i} href={`/tags/${tag}`}>
-            <a className="inline-block bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold px-2 py-1 rounded mr-2 mb-2 whitespace-nowrap overflow-hidden overflow-ellipsis">
-                {tag}
-            </a>
+        <Link passHref key={i} href={`/tags/${tag}`} className="inline-block bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold px-2 py-1 rounded mr-2 mb-2 whitespace-nowrap overflow-hidden overflow-ellipsis">
+            {tag}
         </Link>
     ));
 
@@ -59,10 +57,8 @@ export default async function Post({ params }: { params: { postId: string } }) {
                 <div className="flex flex-wrap">{tags}</div>
             </div>
 
-            <Link href="/">
-                <a className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">
-                    Back to Home
-                </a>
+            <Link passHref href="/" className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">
+                Back to Home
             </Link>
         </>
     );
