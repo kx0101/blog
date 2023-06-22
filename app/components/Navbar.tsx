@@ -8,25 +8,14 @@ export default function Navbar() {
             <nav className='p-4 mt-8 top-0 drop-shadow-xl z-10'>
                 <div className="mx-auto flex flex-col sm:flex-row items-center justify-center">
                     <div className="flex flex-row text-xl text-white m-2 sm:m-0">
-                        <div className="mx-2 hover:underline" style={{ cursor: "not-allowed" }}>
+                        <Link href="/about" className="mx-2 hover:underline">
                             About
-                        </div>
-
-                        <div className="mx-2 hover:underline" style={{ cursor: "not-allowed" }}>
-                            Projects
-                        </div>
+                        </Link>
 
                         <div className="mx-2 hover:underline" style={{ cursor: "not-allowed" }}>
                             Contact
                         </div>
-
                         {/* 
-                        <Link href="/about" className="mx-2 hover:underline">
-                            About
-                        </Link>
-                        <Link href="/projects" className="mx-2 hover:underline">
-                            Projects
-                        </Link>
                         <Link href="/contact" className="mx-2 hover:underline">
                             Contact
                         </Link>

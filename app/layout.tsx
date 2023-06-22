@@ -4,7 +4,7 @@ import Navbar from './components/Navbar'
 import ScrollToTopButton from './components/ScrollToTopButton'
 
 export const metadata = {
-    title: "Elijah's Blog",
+    title: "Elijah Koulaxis",
     description: 'Created by Elijah',
 }
 
