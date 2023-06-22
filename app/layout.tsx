@@ -2,6 +2,7 @@ import './globals.css'
 import { FaGithub, FaLinkedin } from "react-icons/fa";
 import Navbar from './components/Navbar'
 import ScrollToTopButton from './components/ScrollToTopButton'
+import { AnimatePresence } from 'framer-motion';
 
 export const metadata = {
     title: "Elijah Koulaxis",

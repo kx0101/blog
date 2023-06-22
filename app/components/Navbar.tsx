@@ -7,8 +7,8 @@ export default function Navbar() {
             <HorizontalBar />
             <nav className='p-4 mt-8 top-0 drop-shadow-xl z-10'>
                 <div className="mx-auto flex flex-col sm:flex-row items-center justify-center">
-                    <div className="flex flex-row text-xl text-white m-2 sm:m-0">
-                        <Link href="/about" className="mx-2 hover:underline">
+                    <div className="flex flex-row text-xl text-white m-4 sm:m-0">
+                        <Link href="/about" className="mx-6 hover:underline">
                             About
                         </Link>
 

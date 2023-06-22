@@ -8,7 +8,7 @@ export default function Posts({ posts }: { posts: Meta[] }) {
     return (
         <>
             {posts.map((post) => (
-                <ListItem key={post.id} post={post} />
+                <ListItem key={post.title} post={post} />
             ))}
         </>
     );

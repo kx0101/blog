@@ -43,3 +43,17 @@ h2[id] a {
     transform: rotate(360deg);
   }
 }
+
+.fade-in {
+  opacity: 0;
+  animation: fade-in-animation 0.5s ease-in forwards;
+}
+
+@keyframes fade-in-animation {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

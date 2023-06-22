@@ -50,7 +50,7 @@ export default async function Post({ params }: { params: { postId: string } }) {
                     <p className="text-gray-400 text-sm">{pubDate}</p>
                 </div>
             </div>
-            <article className="text-white prose-lg max-w-none mb-8">{content}</article>
+            <article className="text-white prose-lg max-w-none mb-8 fade-in">{content}</article>
 
             <div className="flex flex-wrap mb-8">
                 <span className="mr-2">Tags:</span>

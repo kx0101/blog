@@ -11,6 +11,7 @@ type BlogSectionProps = {
 }
 
 const BlogSection: React.FC<BlogSectionProps> = ({ searchQuery, handleInputChange, filteredPosts, loading }) => {
+
     return (
         <section className="mt-12 mx-auto max-w-2xl">
             <div className="text-center">
