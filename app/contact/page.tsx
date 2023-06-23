@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import useContactForm from './hooks/useContactForm';
 import sendEmail from './utils/send-email';
 import { Spinner } from '../components/Spinner';
+import { motion } from 'framer-motion';
 
 const Contact = () => {
     const { values, setValues, handleChange } = useContactForm();
@@ -49,7 +50,12 @@ const Contact = () => {
     };
 
     return (
-        <div className="max-w-md mx-auto mt-8">
+        <motion.div
+            className="max-w-md mx-auto mt-8"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+        >
             <h2 className="text-2xl font-bold mb-4">Contact Me</h2>
             <form onSubmit={handleSubmit}>
                 <div className="mb-4">
@@ -97,26 +103,34 @@ const Contact = () => {
                 {isLoading ?
                     <Spinner />
                     :
-                    <button
+                    <motion.button
                         type="submit"
                         value="Submit"
                         className="w-full py-2 px-4 text-white bg-blue-500 rounded-md hover:bg-blue-600"
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        transition={{ duration: 0.2 }}
                     >
                         Send
-                    </button>
+                    </motion.button>
                 }
 
             </form>
 
             {responseMessage.message && (
-                <div
-                    className={`mt-4 p-4 rounded ${responseMessage.isSuccessful ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                <motion.div
+                    className={`mt-4 p-4 rounded ${responseMessage.isSuccessful
+                        ? 'bg-green-100 text-green-800'
+                        : 'bg-red-100 text-red-800'
                         }`}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.5 }}
                 >
                     {responseMessage.message}
-                </div>
+                </motion.div>
             )}
-        </div>
+        </motion.div>
     );
 };
 

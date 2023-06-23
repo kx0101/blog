@@ -1,7 +1,7 @@
 export const aboutData = {
     aboutMe: {
         title: "Who is this guy?",
-        description: "Hey there, I'm Elijah! 👋 a student at the University of Thessaly and a Junior Software Engineer at Netcompany-Intrasoft. I'm all about embracing the grind and never backing down from a challenge. I thrive on solving technical puzzles, crafting software applications, and diving deep into the inner workings of things. When I'm not coding for fun, you'll find me hitting the gym, exploring new places, catching up on movies/series, or simply chilling with friends in epic hangout spots! As they say, dreams without goals are just dreams. That's why I bring creativity, responsibility, and teamwork to the table, fueling my hard work and passion for learning.",
+        description: "Hey there, I'm Elijah! 👋 a student at the University of Thessaly and a Junior Software Engineer at Netcompany-Intrasoft. I'm all about embracing the grind and never backing down from a challenge. I love technical puzzles, crafting software applications, and diving deep into the inner workings of things. When I'm not coding for fun, you'll find me hitting the gym, exploring new places, catching up on movies/series, or simply chilling with friends doing barbeque/travelling/gaming! That's why I bring creativity, responsibility, and teamwork to the table, fueling my hard work and passion for learning.",
     },
     hobbiesInterests: {
         title: "Hobbies and Interests",
