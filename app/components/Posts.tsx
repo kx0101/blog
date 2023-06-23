@@ -1,14 +1,12 @@
-import { getSortedPostsData } from "@/lib/posts"
-import ListItem from "./ListItem";
+import ListItem from './ListItem';
+import { Meta } from '@/types';
 
-export default function Posts() {
-  const posts = getSortedPostsData();
-
-  return (
-    <>
-      {posts.map((post) => (
-        <ListItem key={post.id} post={post} />
-      ))}
-    </>
-  );
+export default function Posts({ posts }: { posts: Meta[] }) {
+    return (
+        <>
+            {posts.map((post) => (
+                <ListItem key={post.title} post={post} />
+            ))}
+        </>
+    );
 }

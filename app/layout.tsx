@@ -4,7 +4,7 @@ import Navbar from './components/Navbar'
 import ScrollToTopButton from './components/ScrollToTopButton'
 
 export const metadata = {
-    title: "Elijah's Blog",
+    title: "Elijah Koulaxis",
     description: 'Created by Elijah',
 }
 
@@ -20,6 +20,7 @@ export default function RootLayout({
             <body className="bg-gray-900 text-gray-100">
                 <Navbar />
                 <main className="px-4 md:px-6 mx-auto max-w-3xl">{children}</main>
+
                 <footer className="py-4 text-center">
                     <div className="flex justify-center space-x-4 mt-4 mb-4">
                         <a target="_blank" href="https://github.com/kx0101" className="text-2xl text-white hover:text-blue-400">
@@ -37,6 +38,7 @@ export default function RootLayout({
                         Made with Next.js, Tailwind and hosted on Vercel
                     </p>
                 </footer>
+
                 <ScrollToTopButton />
             </body>
         </html>
