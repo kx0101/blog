@@ -8,7 +8,7 @@ const useFetchPosts = () => {
 
     useEffect(() => {
         const fetchInitialPosts = async () => {
-            const response = await fetch(`/api/posts`);
+            const response = await fetch("/api/posts");
             const { posts } = await response.json();
 
             setInitialPosts(posts);

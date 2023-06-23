@@ -4,9 +4,9 @@ import ProfilePic from './ProfilePic';
 
 const Profile = () => {
     return (
-        <div className="sm:w-1/2">
+        <div className="sm:w-1/2 sm:mr-16">
             <ProfilePic />
-            <div className="flex justify-center space-x-4 mt-4">
+            <div className="flex justify-center space-x-4 mt-8">
                 <a
                     target="_blank"
                     href="https://github.com/kx0101"

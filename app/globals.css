@@ -57,3 +57,12 @@ h2[id] a {
     opacity: 1;
   }
 }
+
+.quote-text {
+    position: relative;
+    font-size: 1.2rem;
+    font-style: italic;
+    padding-left: 1rem;
+    border-left: 4px solid #444;
+}
+
