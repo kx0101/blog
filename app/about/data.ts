@@ -55,10 +55,10 @@ export const aboutData = {
             {
                 company: 'Netcompany-Intrasoft',
                 milestones: [
-                    { milestone: "Got hired as an intern by Netcompany-Intrasoft", year: "2022", emoji: "💼" },
+                    { milestone: "Got hired as an intern", year: "2022", emoji: "💼" },
                     { milestone: "Successfully received a return offer from them to continue working as a full-time software engineer", year: "2022", emoji: "💼" },
-                    { milestone: "Achieved the highest rating of 4.6/5.0 among engineers with 0 to 1.5 years of experience in my first 6-month performance review at Netcompany-Intrasoft", year: "2023", emoji: "🏆" },
-                    { milestone: "Took the initiative to create and document a Python script to automate daily operations and saved 5% of working hours at Netcompany-Intrasoft", year: "2023", emoji: "⚙️" },
+                    { milestone: "Achieved the highest rating of 4.6/5.0 among engineers with 0 to 1.5 years of experience in my first 6-month performance review", year: "2023", emoji: "🏆" },
+                    { milestone: "Took the initiative to create and document a Python script to automate daily operations and saved 5% of working hours", year: "2023", emoji: "⚙️" },
                 ]
             },
 
