@@ -1,0 +1,116 @@
+---
+title: 'Building an EventEmitter in TypeScript: Solving the 30-Days-JavaScript LeetCode Challenge'
+date: '2023-06-26'
+tags: ['typescript', 'programming', 'leetcode', 'map', 'data-structures', 'javascript']
+---
+
+![EventEmitter](/images/EventEmitter.png)
+
+Exams are finally over! That's why I decided to take up the challenge of the 30-Days-JavaScript LeetCode challenge. One problem that caught my attention was designing an EventEmitter class. In this post, we'll dive into the problem statement, explore my solution, and see how it can be used in practical scenarios!
+I personally believe that this would be an amazing coding interview question.
+
+*Highly recommend you to solve these questions:* <u>**[30-days-of-javascript-leetcode](https://leetcode.com/studyplan/30-days-of-javascript/)**</u>
+
+### <h3><u>**Understanding the problem**</u></h3>
+
+The task at hand was to implement an EventEmitter class with two essential methods: subscribe and emit. The subscribe method allows us to register callback functions for specific events, while the emit method triggers the registered callbacks when an event occurs.
+
+<u>**[Leetcode Question](https://leetcode.com/problems/event-emitter/description/?envType=study-plan-v2&envId=30-days-of-javascript)**</u>
+### <h3><u>**Designing the EventEmitter Class**</u></h3>
+
+```typescript
+type Callback = (...args: any[]) => any;
+type Subscription = {
+    unsubscribe: () => void;
+};
+
+class EventEmitter {
+    private events: Map<string, Callback[]> = new Map();
+
+    subscribe(eventName, callback) {
+        if (!this.events.has(eventName)) {
+            this.events.set(eventName, []);
+        }
+
+        const event = this.events.get(eventName);
+        event.push(callback);
+
+        return {
+            unsubscribe: () => {
+                const index = event.indexOf(callback);
+
+                if (index > -1) {
+                    event.splice(index, 1);
+                }
+            },
+        };
+    }
+
+    emit(eventName, args = []) {
+        const event = this.events.get(eventName);
+
+        if (!event) {
+            return [];
+        }
+
+        return event.map(callback => callback(...args));
+    }
+}
+```
+
+The EventEmitter class contains a Map called events to store the subscribed callbacks for each event name. The subscribe method checks if the event already exists in the map and creates an empty array if not. It then adds the new callback to the event's array of callbacks. The method returns an object with an unsubscribe method that removes the callback from the event's array of callbacks when called.
+
+The emit method triggers the callbacks associated with a specific event. It retrieves the event's array of callbacks from the events map and invokes each callback with the provided arguments (or an empty array). The results of the callback invocations are returned as an array.
+
+### <h3><u>**Practical Use Cases**</u></h3>
+
+Where could we use an EventEmitter?
+
+1. <h3>**User Interaction Events**</h3>
+
+```typescript
+const eventEmitter = new EventEmitter();
+
+const clickSubscription = eventEmitter.subscribe('click', () => {
+    console.log('User clicked on the button');
+});
+
+// Trigger the 'click' event
+eventEmitter.emit('click');
+```
+
+2. <h3>**Data Loading Events**</h3>
+
+```typescript
+const eventEmitter = new EventEmitter();
+
+const dataLoadedSubscription = eventEmitter.subscribe('dataLoaded', (data) => {
+    console.log('Data loaded:', data);
+});
+
+const data = fetchData(); // Simulate data loading 
+eventEmitter.emit('dataLoaded', data);
+```
+
+3. <h3>**Custom Event Management**</h3>
+
+```typescript
+const eventEmitter = new EventEmitter();
+
+const subscription = eventEmitter.subscribe('customEvent', (arg1, arg2) => {
+    console.log('Custom event emitted with arguments:', arg1, arg2);
+});
+
+// Emit the custom event with arguments
+eventEmitter.emit('customEvent', 'Hello', 'World');
+```
+
+### <h3><u>**Conclusion**</u></h3>
+
+With the EventEmitter class in the power of our hands, we can handle user interactions, manage data loading events, and create custom event-driven systems. It opens up a world of possibilities!
+
+I hope you found this post helpful in understanding event handling and building an EventEmitter. Now, go forth and add some event-driven magic to your JavaScript projects!
+
+<u>**[Here's](https://github.com/kx0101/30-days-javascript-leetcode-challenge)**</u> the github repo with all the solutions of this challenge
+
+Happy coding!
