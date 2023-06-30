@@ -1,5 +1,5 @@
 import React from 'react';
-import { FaGithub, FaLinkedin } from 'react-icons/fa';
+import { FaGithub, FaLinkedin, FaTwitch } from 'react-icons/fa';
 import ProfilePic from './ProfilePic';
 
 const Profile = () => {
@@ -20,6 +20,13 @@ const Profile = () => {
                     className="text-4xl text-white hover:text-blue-400"
                 >
                     <FaLinkedin />
+                </a>
+                <a
+                    target="_blank"
+                    href="https://twitch.tv/elijahkx"
+                    className="text-4xl text-white hover:text-blue-400"
+                >
+                    <FaTwitch />
                 </a>
             </div>
         </div>

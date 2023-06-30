@@ -1,5 +1,5 @@
 import './globals.css'
-import { FaGithub, FaLinkedin } from "react-icons/fa";
+import { FaGithub, FaLinkedin, FaTwitch } from "react-icons/fa";
 import Navbar from './components/Navbar'
 import ScrollToTopButton from './components/ScrollToTopButton'
 
@@ -28,6 +28,10 @@ export default function RootLayout({
                         </a>
                         <a target="_blank" href="https://www.linkedin.com/in/elijah-koulaxiskx/" className="text-2xl text-white hover:text-blue-400">
                             <FaLinkedin />
+                        </a>
+
+                        <a target="_blank" href="https://twitch.tv/elijahkx" className="text-2xl text-white hover:text-blue-400">
+                            <FaTwitch />
                         </a>
                     </div>
                     <p className="text-gray-400 text-sm">
